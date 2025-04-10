@@ -1,13 +1,11 @@
-import './App.css'
+import Body from "./components/Body.jsx";
 
 function App() {
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold text-green-500">
-                Netflix GPT
-            </h1>
-        </div>
+        <>
+           <Body/>
+        </>
     )
 }
 
