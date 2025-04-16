@@ -1,11 +1,11 @@
 import React, {useRef, useState} from 'react';
 import Header from "./Header.jsx";
 import {checkValidData} from "../utils/validate.js";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile} from "firebase/auth";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile} from "firebase/auth";
 import {auth} from "../utils/firebase.js";
-import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {addUser} from "../utils/userSlice.js";
+import {LOGO} from "../utils/constants.js";
 
 const Login = () => {
     const [isSignInForm, setIsSignInForm] = useState(true)
@@ -13,7 +13,6 @@ const Login = () => {
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
     const nameRef = useRef(null);
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
 
@@ -23,24 +22,23 @@ const Login = () => {
     const handleButtonClick = () => {
         const checkedMessage = checkValidData(emailRef.current.value, passwordRef.current.value);
         setErrorMessage(checkedMessage)
-       if (checkedMessage) {
-           return
-       }
-       if(isSignInForm) {
-           signInWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
-               .then((userCredential) => {
-                   const user = userCredential.user;
-                   setErrorMessage(null)
-                   navigate("/browse");
+        if (checkedMessage) {
+            return
+        }
+        if (isSignInForm) {
+            signInWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    setErrorMessage(null)
 
-               })
-               .catch((error) => {
-                   const errorCode = error.code;
-                   const errorMessage = error.message;
-                   setErrorMessage(errorMessage)
-               });
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setErrorMessage(errorMessage)
+                });
 
-       } else {
+        } else {
             createUserWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
                 .then((userCredential) => {
                     const user = userCredential.user;
@@ -49,27 +47,24 @@ const Login = () => {
                     }).then(() => {
                         const {uid, email, displayName} = auth.currentUser;
                         dispatch(addUser({uid: uid, email: email, displayName: displayName}));
-                        navigate("/browse");
                         setErrorMessage(null)
                     }).catch((error) => {
                         setErrorMessage(error.message);
-                        navigate("/error");
                     });
                 })
                 .catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
                     setErrorMessage(errorMessage)
-                    navigate("/error");
                 });
-       }
+        }
     };
     return (
         <div>
             <Header/>
             <div className={"absolute"}>
                 <img
-                    src={"https://assets.nflxext.com/ffe/siteui/vlv3/fa4630b1-ca1e-4788-94a9-eccef9f7af86/web/KR-en-20250407-TRIFECTA-perspective_d6922ac8-b7f9-4140-ae53-a57cb2eb3bd1_medium.jpg"}
+                    src={LOGO}
                     alt={"logo"}/>
             </div>
             <form className={"absolute p-12 bg-black w-3/12 m-36 mx-auto right-0 left-0 text-white opacity-80"}
